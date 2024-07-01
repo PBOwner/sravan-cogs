@@ -550,7 +550,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.command(name="plead", aliases=["ask"])
+    @commands.command(name="plead")
     @commands.guild_only()
     async def plead(self, ctx: commands.Context, user: discord.Member):
         """
