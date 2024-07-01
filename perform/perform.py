@@ -189,7 +189,7 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="poke")
-    @commands.bot_has_permissions(embed_links=True)
+
     async def poke(self, ctx: commands.Context, user: discord.Member):
         """
         Poke a user!
@@ -210,7 +210,7 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="kiss")
-    @commands.bot_has_permissions(embed_links=True)
+
     async def kiss(self, ctx: commands.Context, user: discord.Member):
         """
         Kiss a user!
@@ -231,7 +231,7 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="hug")
-    @commands.bot_has_permissions(embed_links=True)
+
     async def hug(self, ctx: commands.Context, user: discord.Member):
         """
         Hugs a user!
@@ -250,7 +250,7 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="pat")
-    @commands.bot_has_permissions(embed_links=True)
+
     async def pat(self, ctx: commands.Context, user: discord.Member):
         """
         Pats a user!
@@ -269,7 +269,7 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="tickle")
-    @commands.bot_has_permissions(embed_links=True)
+
     async def tickle(self, ctx: commands.Context, user: discord.Member):
         """
         Tickles a user!
@@ -290,7 +290,7 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="smug")
-    @commands.bot_has_permissions(embed_links=True)
+
     async def smug(self, ctx: commands.Context):
         """
         Be smug towards someone!
@@ -305,7 +305,7 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="lick")
-    @commands.bot_has_permissions(embed_links=True)
+
     async def lick(self, ctx: commands.Context, user: discord.Member):
         """
         Licks a user!
@@ -326,7 +326,7 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="slap")
-    @commands.bot_has_permissions(embed_links=True)
+
     async def slap(self, ctx: commands.Context, user: discord.Member):
         """
         Slaps a user!
@@ -347,7 +347,7 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="cry")
-    @commands.bot_has_permissions(embed_links=True)
+
     async def cry(self, ctx: commands.Context):
         """
         Start crying!
@@ -362,7 +362,7 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="sleep")
-    @commands.bot_has_permissions(embed_links=True)
+
     async def sleep(self, ctx: commands.Context):
         """
         Act sleepy!
@@ -377,7 +377,7 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="spank")
-    @commands.bot_has_permissions(embed_links=True)
+
     async def spank(self, ctx: commands.Context, user: discord.Member):
         """
         Spanks a user!
@@ -409,7 +409,7 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="pout")
-    @commands.bot_has_permissions(embed_links=True)
+
     async def pout(self, ctx: commands.Context):
         """
         Act pout!
@@ -424,7 +424,7 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="blush")
-    @commands.bot_has_permissions(embed_links=True)
+
     async def blush(self, ctx: commands.Context):
         """
         Act blush!
@@ -439,7 +439,7 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="feed")
-    @commands.bot_has_permissions(embed_links=True)
+
     async def feed(self, ctx: commands.Context, user: discord.Member):
         """
         Feeds a user!
@@ -471,7 +471,7 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="punch")
-    @commands.bot_has_permissions(embed_links=True)
+
     async def punch(self, ctx: commands.Context, user: discord.Member):
         """
         Punch a user!
@@ -982,7 +982,7 @@ class Perform(commands.Cog):
 
     @commands.is_owner()
     @commands.command()
-    @commands.bot_has_permissions(embed_links=True)
+
     async def performapi(self, ctx: commands.Context):
         """
         Steps to get the API token needed for few commands.
@@ -1002,7 +1002,7 @@ class Perform(commands.Cog):
 
     @commands.command(aliases=["rstats", "pstats", "roleplaystats"])
     @commands.guild_only()
-    @commands.bot_has_permissions(embed_links=True)
+
     async def performstats(
         self, ctx: commands.Context, action: str, user: Optional[discord.User]
     ):
