@@ -29,7 +29,7 @@ async def has_webhook_perms(ctx: commands.Context) -> bool:
 
 async def has_embed_perms(ctx: commands.Context) -> bool:
     if isinstance(ctx.channel, discord.DMChannel):
-        return False
+        return True
     perm = ctx.channel.permissions_for(ctx.channel.guild.me).embed_links
     return perm is True
 
@@ -40,7 +40,12 @@ async def send_embed(
     embed: discord.Embed,
     user: Optional[discord.Member] = None,
 ):
-    if await has_webhook_perms(ctx):
+    if isinstance(ctx.channel, discord.DMChannel):
+        if user:
+            await ctx.send(embed=embed, content=user.mention)
+        else:
+            await ctx.send(embed=embed)
+    elif await has_webhook_perms(ctx):
         try:
             if user:
                 await print_it(self, ctx, embed, user)
@@ -86,8 +91,8 @@ async def kawaiiembed(
     )
     try:
         url = await api_call(f"https://kawaii.red/api/gif/{endpoint}/token={api_key}")
-    except ContentTypeError:
-        return "The API is currently down, please try again later."
+    except (ContentTypeError, KeyError):
+        return "The API returned an error. Please try again later."
     embed.set_image(url=url)
 
     return embed
