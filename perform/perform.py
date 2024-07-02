@@ -156,21 +156,21 @@ class Perform(commands.Cog):
         else:
             author = ctx_or_interaction.user
 
-        embed = await kawaiiembed(self, ctx_or_interaction, f"{action}ed", action, user)
+        embed = await PerformUtils.kawaiiembed(self, ctx_or_interaction, f"{action}ed", action, user)
         if not isinstance(embed, discord.Embed):
             return await ctx_or_interaction.send(embed)
 
         if user:
             target = await self.config.custom("Target", author.id, user.id)[f"{action}_r"]()
             used = await self.config.user(author)[f"{action}_s"]()
-            await add_footer(self, ctx_or_interaction, embed, used, f"{action}s", target=target, word2=f"{action}ed", user=user)
-            await send_embed(self, ctx_or_interaction, embed, user)
+            await PerformUtils.add_footer(self, ctx_or_interaction, embed, used, f"{action}s", target=target, word2=f"{action}ed", user=user)
+            await PerformUtils.send_embed(self, ctx_or_interaction, embed, user)
             await self.config.user(author)[f"{action}_s"].set(used + 1)
             await self.config.custom("Target", author.id, user.id)[f"{action}_r"].set(target + 1)
         else:
             used = await self.config.user(author)[f"{action}_s"]()
-            await add_footer(self, ctx_or_interaction, embed, used, f"{action}s")
-            await send_embed(self, ctx_or_interaction, embed)
+            await PerformUtils.add_footer(self, ctx_or_interaction, embed, used, f"{action}s")
+            await PerformUtils.send_embed(self, ctx_or_interaction, embed)
             await self.config.user(author)[f"{action}_s"].set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
@@ -390,14 +390,6 @@ class Perform(commands.Cog):
         await self.do_action(ctx, None, "laugh")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.command(name="laugh")
-    async def laugh(self, ctx: commands.Context):
-        """
-        Start laughing!
-        """
-        await self.do_action(ctx, None, "laugh")
-
-    @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="peek", aliases=["lurk"])
     async def lurk(self, ctx: commands.Context):
         """
@@ -572,7 +564,7 @@ class Perform(commands.Cog):
             return await ctx.send(
                 f"The valid choices to view stats for are {', '.join(f'`{c}`' for c in self.COMMANDS)}"
             )
-        embed = await rstats_embed(self, ctx, action, user)
+        embed = await PerformUtils.rstats_embed(self, ctx, action, user)
         await ctx.send(embed=embed)
 
     @commands.group(aliases=["pset", "rset", "roleplayset"])
@@ -584,7 +576,7 @@ class Perform(commands.Cog):
     async def footer(self, ctx: commands.Context):
         """Toggle showing footers for roleplay stats"""
         value = await self.config.footer()
-        await self.config.footer.set(not value)
+        await self.config.footer.set(!value)
         if value:
             await ctx.send("Footers will no longer be shown")
         else:
