@@ -576,7 +576,7 @@ class Perform(commands.Cog):
     async def footer(self, ctx: commands.Context):
         """Toggle showing footers for roleplay stats"""
         value = await self.config.footer()
-        await self.config.footer.set(!value)
+        await self.config.footer.set(not value)
         if value:
             await ctx.send("Footers will no longer be shown")
         else:
