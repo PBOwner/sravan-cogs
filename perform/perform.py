@@ -1174,7 +1174,7 @@ class Perform(commands.Cog):
         embed = await kawaiiembed(self, ctx, "is dancing", "dance")
         if not isinstance(embed, discord.Embed):
             return await ctx.send(embed)
-                used = await self.config.user(ctx.author).dance()
+        used = await self.config.user(ctx.author).dance()
         await add_footer(self, ctx, embed, used, "dances")
         await send_embed(self, ctx, embed)
         await self.config.user(ctx.author).dance.set(used + 1)
