@@ -1,31 +1,14 @@
-"""
-Copyright 2021 Onii-chan.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
-
 import logging
 from random import randint
-from typing import Optional
+from typing import Optional, Union
 
 import discord
-from redbot.core import Config, commands
+from redbot.core import Config, commands, app_commands
 from redbot.core.bot import Red
 
 from .utils import add_footer, kawaiiembed, rstats_embed, send_embed
 
 log = logging.getLogger("red.sravan.perform")
-
 
 class Perform(commands.Cog):
     """
@@ -167,328 +150,156 @@ class Perform(commands.Cog):
         pre_processed = super().format_help_for_context(ctx)
         return f"{pre_processed}\n\nAuthors: {', '.join(self.__author__)}\nCog Version: {self.__version__}"
 
+    async def do_action(self, ctx_or_interaction: Union[commands.Context, discord.Interaction], user: Optional[discord.Member], action: str):
+        if isinstance(ctx_or_interaction, commands.Context):
+            author = ctx_or_interaction.author
+        else:
+            author = ctx_or_interaction.user
+
+        embed = await kawaiiembed(self, ctx_or_interaction, f"{action}ed", action, user)
+        if not isinstance(embed, discord.Embed):
+            return await ctx_or_interaction.send(embed)
+
+        if user:
+            target = await self.config.custom("Target", author.id, user.id)[f"{action}_r"]()
+            used = await self.config.user(author)[f"{action}_s"]()
+            await add_footer(self, ctx_or_interaction, embed, used, f"{action}s", target=target, word2=f"{action}ed", user=user)
+            await send_embed(self, ctx_or_interaction, embed, user)
+            await self.config.user(author)[f"{action}_s"].set(used + 1)
+            await self.config.custom("Target", author.id, user.id)[f"{action}_r"].set(target + 1)
+        else:
+            used = await self.config.user(author)[f"{action}_s"]()
+            await add_footer(self, ctx_or_interaction, embed, used, f"{action}s")
+            await send_embed(self, ctx_or_interaction, embed)
+            await self.config.user(author)[f"{action}_s"].set(used + 1)
+
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command()
     async def cuddle(self, ctx: commands.Context, user: discord.Member):
         """
         Cuddle a user!
         """
-        embed = await kawaiiembed(self, ctx, "cuddled", "cuddle", user)
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        target = await self.config.custom("Target", ctx.author.id, user.id).cuddle_r()
-        used = await self.config.user(ctx.author).cuddle_s()
-        await add_footer(
-            self, ctx, embed, used, "cuddles", target=target, word2="cuddled", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).cuddle_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).cuddle_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "cuddle")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="poke")
-
     async def poke(self, ctx: commands.Context, user: discord.Member):
         """
         Poke a user!
         """
-        embed = await kawaiiembed(self, ctx, "poked", "poke", user)
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        target = await self.config.custom("Target", ctx.author.id, user.id).poke_r()
-        used = await self.config.user(ctx.author).poke_s()
-        await add_footer(
-            self, ctx, embed, used, "pokes", target=target, word2="poked", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).poke_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).poke_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "poke")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="kiss")
-
     async def kiss(self, ctx: commands.Context, user: discord.Member):
         """
         Kiss a user!
         """
-        embed = await kawaiiembed(self, ctx, "just kissed", "kiss", user)
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        target = await self.config.custom("Target", ctx.author.id, user.id).kiss_r()
-        used = await self.config.user(ctx.author).kiss_s()
-        await add_footer(
-            self, ctx, embed, used, "kisses", target=target, word2="kissed", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).kiss_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).kiss_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "kiss")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="hug")
-
     async def hug(self, ctx: commands.Context, user: discord.Member):
         """
         Hugs a user!
         """
-        embed = await kawaiiembed(self, ctx, "just hugged", "hug", user)
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        target = await self.config.custom("Target", ctx.author.id, user.id).hug_r()
-        used = await self.config.user(ctx.author).hug_s()
-        await add_footer(
-            self, ctx, embed, used, "hugs", target=target, word2="hugged", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).hug_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).hug_r.set(target + 1)
+        await self.do_action(ctx, user, "hug")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="pat")
-
     async def pat(self, ctx: commands.Context, user: discord.Member):
         """
         Pats a user!
         """
-        embed = await kawaiiembed(self, ctx, "just patted", "pat", user)
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        target = await self.config.custom("Target", ctx.author.id, user.id).pat_r()
-        used = await self.config.user(ctx.author).pat_s()
-        await add_footer(
-            self, ctx, embed, used, "pats", target=target, word2="patted", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).pat_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).pat_r.set(target + 1)
+        await self.do_action(ctx, user, "pat")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="tickle")
-
     async def tickle(self, ctx: commands.Context, user: discord.Member):
         """
         Tickles a user!
         """
-        embed = await kawaiiembed(self, ctx, "just tickled", "tickle", user)
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        target = await self.config.custom("Target", ctx.author.id, user.id).tickle_r()
-        used = await self.config.user(ctx.author).tickle_s()
-        await add_footer(
-            self, ctx, embed, used, "tickles", target=target, word2="tickled", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).tickle_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).tickle_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "tickle")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="smug")
-
     async def smug(self, ctx: commands.Context):
         """
         Be smug towards someone!
         """
-        embed = await kawaiiembed(self, ctx, "is acting so smug!", "smug")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).smug_s()
-        await add_footer(self, ctx, embed, used, "smugs")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).smug_s.set(used + 1)
+        await self.do_action(ctx, None, "smug")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="lick")
-
     async def lick(self, ctx: commands.Context, user: discord.Member):
         """
         Licks a user!
         """
-        embed = await kawaiiembed(self, ctx, "just licked", "lick", user)
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        target = await self.config.custom("Target", ctx.author.id, user.id).lick_r()
-        used = await self.config.user(ctx.author).lick_s()
-        await add_footer(
-            self, ctx, embed, used, "licks", target=target, word2="licked", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).lick_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).lick_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "lick")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="slap")
-
     async def slap(self, ctx: commands.Context, user: discord.Member):
         """
         Slaps a user!
         """
-        embed = await kawaiiembed(self, ctx, "just slapped", "slap", user)
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        target = await self.config.custom("Target", ctx.author.id, user.id).slap_r()
-        used = await self.config.user(ctx.author).slap_s()
-        await add_footer(
-            self, ctx, embed, used, "slaps", target=target, word2="slapped", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).slap_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).slap_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "slap")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="cry")
-
     async def cry(self, ctx: commands.Context):
         """
         Start crying!
         """
-        embed = await kawaiiembed(self, ctx, "is crying!", "cry")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).cry()
-        await add_footer(self, ctx, embed, used, "cries")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).cry.set(used + 1)
+        await self.do_action(ctx, None, "cry")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="sleep")
-
     async def sleep(self, ctx: commands.Context):
         """
         Act sleepy!
         """
-        embed = await kawaiiembed(self, ctx, "is sleepy!", "sleepy")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).sleep()
-        await add_footer(self, ctx, embed, used, "sleeps")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).sleep.set(used + 1)
+        await self.do_action(ctx, None, "sleep")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="spank")
-
     async def spank(self, ctx: commands.Context, user: discord.Member):
         """
         Spanks a user!
         """
-
-        images = await self.config.spank()
-
-        mn = len(images)
-        i = randint(0, mn - 1)
-
-        embed = discord.Embed(
-            colour=discord.Colour.random(),
-            description=f"**{ctx.author.mention}** just spanked {f'**{str(user.mention)}**' if user else 'themselves'}!",
-        )
-        embed.set_author(
-            name=self.bot.user.display_name, icon_url=self.bot.user.display_avatar
-        )
-        embed.set_image(url=images[i])
-        target = await self.config.custom("Target", ctx.author.id, user.id).spank_r()
-        used = await self.config.user(ctx.author).spank_s()
-        await add_footer(
-            self, ctx, embed, used, "spanks", target=target, word2="spanked", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).spank_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).spank_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "spank")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="pout")
-
     async def pout(self, ctx: commands.Context):
         """
         Act pout!
         """
-        embed = await kawaiiembed(self, ctx, "is acting pout!", "pout")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).pout()
-        await add_footer(self, ctx, embed, used, "pouts")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).pout.set(used + 1)
+        await self.do_action(ctx, None, "pout")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="blush")
-
     async def blush(self, ctx: commands.Context):
         """
         Act blush!
         """
-        embed = await kawaiiembed(self, ctx, "is blushing!", "blush")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).blush()
-        await add_footer(self, ctx, embed, used, "blushes")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).blush.set(used + 1)
+        await self.do_action(ctx, None, "blush")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="feed")
-
     async def feed(self, ctx: commands.Context, user: discord.Member):
         """
         Feeds a user!
         """
-
-        images = await self.config.feed()
-
-        mn = len(images)
-        i = randint(0, mn - 1)
-
-        embed = discord.Embed(
-            colour=discord.Colour.random(),
-            description=f"**{ctx.author.mention}** feeds {f'**{str(user.mention)}**' if user else 'themselves'}!",
-        )
-        embed.set_author(
-            name=self.bot.user.display_name, icon_url=self.bot.user.display_avatar
-        )
-        embed.set_image(url=images[i])
-        target = await self.config.custom("Target", ctx.author.id, user.id).feed_r()
-        used = await self.config.user(ctx.author).feed_s()
-        await add_footer(
-            self, ctx, embed, used, "feeds", target=target, word2="fed", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).feed_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).feed_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "feed")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="punch")
-
     async def punch(self, ctx: commands.Context, user: discord.Member):
         """
         Punch a user!
         """
-        embed = await kawaiiembed(self, ctx, "just punched", "punch", user)
-        if embed is False:
-            return await ctx.send("api is down")
-        target = await self.config.custom("Target", ctx.author.id, user.id).punch_r()
-        used = await self.config.user(ctx.author).punch_s()
-        await add_footer(
-            self, ctx, embed, used, "punches", target=target, word2="punched", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).punch_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).punch_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "punch")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="confuse", aliases=["confused"])
@@ -496,13 +307,7 @@ class Perform(commands.Cog):
         """
         Act confused!
         """
-        embed = await kawaiiembed(self, ctx, "is confused!", "confused")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).confused()
-        await add_footer(self, ctx, embed, used, "confuses")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).confused.set(used + 1)
+        await self.do_action(ctx, None, "confuse")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="amazed", aliases=["amazing"])
@@ -510,13 +315,7 @@ class Perform(commands.Cog):
         """
         Act amazed!
         """
-        embed = await kawaiiembed(self, ctx, "is amazed!", "amazing")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).amazed()
-        await add_footer(self, ctx, embed, used, "amazes")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).amazed.set(used + 1)
+        await self.do_action(ctx, None, "amazed")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command()
@@ -524,26 +323,7 @@ class Perform(commands.Cog):
         """
         Highfive a user!
         """
-        embed = await kawaiiembed(self, ctx, "highfived", "highfive", user)
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        target = await self.config.custom("Target", ctx.author.id, user.id).highfive_r()
-        used = await self.config.user(ctx.author).highfive_s()
-        await add_footer(
-            self,
-            ctx,
-            embed,
-            used,
-            "highfives",
-            target=target,
-            word2="highfived",
-            user=user,
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).highfive_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).highfive_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "highfive")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="plead")
@@ -551,19 +331,7 @@ class Perform(commands.Cog):
         """
         Asks a user!
         """
-        embed = await kawaiiembed(self, ctx, "is pleading", "ask", user)
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        target = await self.config.custom("Target", ctx.author.id, user.id).plead_r()
-        used = await self.config.user(ctx.author).plead_s()
-        await add_footer(
-            self, ctx, embed, used, "pleads", target=target, word2="pleaded", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).plead_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).plead_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "plead")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="clap")
@@ -571,13 +339,7 @@ class Perform(commands.Cog):
         """
         Clap for someone!
         """
-        embed = await kawaiiembed(self, ctx, "is clapping!", "clap")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).clap()
-        await add_footer(self, ctx, embed, used, "claps")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).clap.set(used + 1)
+        await self.do_action(ctx, None, "clap")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="facepalm")
@@ -585,13 +347,7 @@ class Perform(commands.Cog):
         """
         Do a facepalm!
         """
-        embed = await kawaiiembed(self, ctx, "is facepalming!", "facepalm")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).facepalm()
-        await add_footer(self, ctx, embed, used, "facepalms")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).facepalm.set(used + 1)
+        await self.do_action(ctx, None, "facepalm")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="headdesk", aliases=["facedesk"])
@@ -599,13 +355,7 @@ class Perform(commands.Cog):
         """
         Do a facedesk!
         """
-        embed = await kawaiiembed(self, ctx, "is facedesking!", "facedesk")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).facedesk()
-        await add_footer(self, ctx, embed, used, "facedesks")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).facedesk.set(used + 1)
+        await self.do_action(ctx, None, "facedesk")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command()
@@ -613,19 +363,7 @@ class Perform(commands.Cog):
         """
         Kill a user!
         """
-        embed = await kawaiiembed(self, ctx, "killed", "kill", user)
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        target = await self.config.custom("Target", ctx.author.id, user.id).kill_r()
-        used = await self.config.user(ctx.author).kill_s()
-        await add_footer(
-            self, ctx, embed, used, "kills", target=target, word2="killed", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).kill_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).kill_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "kill")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command()
@@ -633,19 +371,7 @@ class Perform(commands.Cog):
         """
         Love a user!
         """
-        embed = await kawaiiembed(self, ctx, "loves", "love", user)
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        target = await self.config.custom("Target", ctx.author.id, user.id).love_r()
-        used = await self.config.user(ctx.author).love_s()
-        await add_footer(
-            self, ctx, embed, used, "loves", target=target, word2="loved", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).love_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).love_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "love")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="hide")
@@ -653,13 +379,7 @@ class Perform(commands.Cog):
         """
         Hide yourself!
         """
-        embed = await kawaiiembed(self, ctx, "is hiding!", "hide")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).hide()
-        await add_footer(self, ctx, embed, used, "hides")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).hide.set(used + 1)
+        await self.do_action(ctx, None, "hide")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="laugh")
@@ -667,13 +387,15 @@ class Perform(commands.Cog):
         """
         Start laughing!
         """
-        embed = await kawaiiembed(self, ctx, "is laughing!", "laugh")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).laugh()
-        await add_footer(self, ctx, embed, used, "laughs")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).laugh.set(used + 1)
+        await self.do_action(ctx, None, "laugh")
+
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.command(name="laugh")
+    async def laugh(self, ctx: commands.Context):
+        """
+        Start laughing!
+        """
+        await self.do_action(ctx, None, "laugh")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="peek", aliases=["lurk"])
@@ -681,13 +403,7 @@ class Perform(commands.Cog):
         """
         Start lurking!
         """
-        embed = await kawaiiembed(self, ctx, "is lurking!", "peek")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).lurk()
-        await add_footer(self, ctx, embed, used, "lurks")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).lurk.set(used + 1)
+        await self.do_action(ctx, None, "lurk")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command()
@@ -695,19 +411,7 @@ class Perform(commands.Cog):
         """
         Bite a user!
         """
-        embed = await kawaiiembed(self, ctx, "is biting", "bite", user)
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        target = await self.config.custom("Target", ctx.author.id, user.id).bite_r()
-        used = await self.config.user(ctx.author).bite_s()
-        await add_footer(
-            self, ctx, embed, used, "bites", target=target, word2="bit", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).bite_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).bite_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "bite")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="dance")
@@ -715,13 +419,7 @@ class Perform(commands.Cog):
         """
         Start dancing!
         """
-        embed = await kawaiiembed(self, ctx, "is dancing", "dance")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).dance()
-        await add_footer(self, ctx, embed, used, "dances")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).dance.set(used + 1)
+        await self.do_action(ctx, None, "dance")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command()
@@ -729,19 +427,7 @@ class Perform(commands.Cog):
         """
         Yeet someone!
         """
-        embed = await kawaiiembed(self, ctx, "yeeted", "yeet", user)
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        target = await self.config.custom("Target", ctx.author.id, user.id).yeet_r()
-        used = await self.config.user(ctx.author).yeet_s()
-        await add_footer(
-            self, ctx, embed, used, "yeets", target=target, word2="yeeted", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).yeet_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).yeet_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "yeet")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="dodge")
@@ -749,13 +435,7 @@ class Perform(commands.Cog):
         """
         Dodge something!
         """
-        embed = await kawaiiembed(self, ctx, "is dodging!", "dodge")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).dodge()
-        await add_footer(self, ctx, embed, used, "dodges")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).dodge.set(used + 1)
+        await self.do_action(ctx, None, "dodge")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="happy")
@@ -763,13 +443,7 @@ class Perform(commands.Cog):
         """
         Act happy!
         """
-        embed = await kawaiiembed(self, ctx, "is happy!", "happy")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).happy()
-        await add_footer(self, ctx, embed, used, "happiness")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).happy.set(used + 1)
+        await self.do_action(ctx, None, "happy")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="cute")
@@ -777,13 +451,7 @@ class Perform(commands.Cog):
         """
         Act cute!
         """
-        embed = await kawaiiembed(self, ctx, "is acting cute!", "cute")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).cute()
-        await add_footer(self, ctx, embed, used, "cuteness")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).cute.set(used + 1)
+        await self.do_action(ctx, None, "cute")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="lonely", aliases=["alone"])
@@ -791,13 +459,7 @@ class Perform(commands.Cog):
         """
         Act lonely!
         """
-        embed = await kawaiiembed(self, ctx, "is lonely!", "lonely")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).lonely()
-        await add_footer(self, ctx, embed, used, "loneliness")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).lonely.set(used + 1)
+        await self.do_action(ctx, None, "lonely")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="mad", aliases=["angry"])
@@ -805,13 +467,7 @@ class Perform(commands.Cog):
         """
         Act angry!
         """
-        embed = await kawaiiembed(self, ctx, "is angry!", "mad")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).mad()
-        await add_footer(self, ctx, embed, used, "madness")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).mad.set(used + 1)
+        await self.do_action(ctx, None, "mad")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="nosebleed")
@@ -819,13 +475,7 @@ class Perform(commands.Cog):
         """
         Start bleeding from nose!
         """
-        embed = await kawaiiembed(self, ctx, "'s nose is bleeding!", "nosebleed")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).nosebleed()
-        await add_footer(self, ctx, embed, used, "nosebleeds")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).nosebleed.set(used + 1)
+        await self.do_action(ctx, None, "nosebleed")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command()
@@ -833,26 +483,7 @@ class Perform(commands.Cog):
         """
         Protech someone!
         """
-        embed = await kawaiiembed(self, ctx, "is protecting!", "protect", user)
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        target = await self.config.custom("Target", ctx.author.id, user.id).protect_r()
-        used = await self.config.user(ctx.author).protect_s()
-        await add_footer(
-            self,
-            ctx,
-            embed,
-            used,
-            "protects",
-            target=target,
-            word2="protected",
-            user=user,
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).protect_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).protect_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "protect")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="run")
@@ -860,13 +491,7 @@ class Perform(commands.Cog):
         """
         Start running!
         """
-        embed = await kawaiiembed(self, ctx, "is running!", "run")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).run()
-        await add_footer(self, ctx, embed, used, "runs")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).run.set(used + 1)
+        await self.do_action(ctx, None, "run")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="scared")
@@ -874,13 +499,7 @@ class Perform(commands.Cog):
         """
         Act scared!
         """
-        embed = await kawaiiembed(self, ctx, "is scared!", "scared")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).scared()
-        await add_footer(self, ctx, embed, used, "scaredness")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).scared.set(used + 1)
+        await self.do_action(ctx, None, "scared")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="shrug")
@@ -888,13 +507,7 @@ class Perform(commands.Cog):
         """
         Start shrugging!
         """
-        embed = await kawaiiembed(self, ctx, "is shrugging!", "shrug")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).shrug()
-        await add_footer(self, ctx, embed, used, "shrugs")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).shrug.set(used + 1)
+        await self.do_action(ctx, None, "shrug")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="scream")
@@ -902,13 +515,7 @@ class Perform(commands.Cog):
         """
         Start screaming!
         """
-        embed = await kawaiiembed(self, ctx, "is screaming!", "scream")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).scream()
-        await add_footer(self, ctx, embed, used, "screams")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).scream.set(used + 1)
+        await self.do_action(ctx, None, "scream")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="stare")
@@ -916,13 +523,7 @@ class Perform(commands.Cog):
         """
         Stare someone!
         """
-        embed = await kawaiiembed(self, ctx, "is staring!", "stare")
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        used = await self.config.user(ctx.author).stare()
-        await add_footer(self, ctx, embed, used, "stares")
-        await send_embed(self, ctx, embed)
-        await self.config.user(ctx.author).stare.set(used + 1)
+        await self.do_action(ctx, None, "stare")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(aliases=["welcome"])
@@ -930,19 +531,7 @@ class Perform(commands.Cog):
         """
         Wave to someone!
         """
-        embed = await kawaiiembed(self, ctx, "is waving", "wave", user)
-        if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
-        target = await self.config.custom("Target", ctx.author.id, user.id).wave_r()
-        used = await self.config.user(ctx.author).wave_s()
-        await add_footer(
-            self, ctx, embed, used, "waves", target=target, word2="waved", user=user
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).wave_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).wave_r.set(
-            target + 1
-        )
+        await self.do_action(ctx, user, "wave")
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="nutkick", aliases=["kicknuts"])
@@ -950,39 +539,10 @@ class Perform(commands.Cog):
         """
         Kick a user on the nuts!
         """
-
-        images = await self.config.nut()
-
-        mn = len(images)
-        i = randint(0, mn - 1)
-
-        embed = discord.Embed(
-            colour=discord.Colour.random(),
-            description=f"**{ctx.author.mention}** just kicked nuts of {f'**{str(user.mention)}**' if user else 'themselves'}!",
-        )
-        embed.set_author(
-            name=self.bot.user.display_name, icon_url=self.bot.user.display_avatar
-        )
-        embed.set_image(url=images[i])
-        target = await self.config.custom("Target", ctx.author.id, user.id).nut_r()
-        used = await self.config.user(ctx.author).nut_s()
-        await add_footer(
-            self,
-            ctx,
-            embed,
-            used,
-            "nutkicks",
-            target=target,
-            word2="nutkicked",
-            user=user,
-        )
-        await send_embed(self, ctx, embed, user)
-        await self.config.user(ctx.author).nut_s.set(used + 1)
-        await self.config.custom("Target", ctx.author.id, user.id).nut_r.set(target + 1)
+        await self.do_action(ctx, user, "nut")
 
     @commands.is_owner()
     @commands.command()
-
     async def performapi(self, ctx: commands.Context):
         """
         Steps to get the API token needed for few commands.
@@ -1002,7 +562,6 @@ class Perform(commands.Cog):
 
     @commands.command(aliases=["rstats", "pstats", "roleplaystats"])
     @commands.guild_only()
-
     async def performstats(
         self, ctx: commands.Context, action: str, user: Optional[discord.User]
     ):
@@ -1040,6 +599,230 @@ class Perform(commands.Cog):
                 log.info(e)
             self.bot.add_command(hug)
 
+    @app_commands.command()
+    async def slash_cuddle(self, interaction: discord.Interaction, user: discord.Member):
+        """Cuddle a user!"""
+        await self.do_action(interaction, user, "cuddle")
+
+    @app_commands.command()
+    async def slash_poke(self, interaction: discord.Interaction, user: discord.Member):
+        """Poke a user!"""
+        await self.do_action(interaction, user, "poke")
+
+    @app_commands.command()
+    async def slash_kiss(self, interaction: discord.Interaction, user: discord.Member):
+        """Kiss a user!"""
+        await self.do_action(interaction, user, "kiss")
+
+    @app_commands.command()
+    async def slash_hug(self, interaction: discord.Interaction, user: discord.Member):
+        """Hug a user!"""
+        await self.do_action(interaction, user, "hug")
+
+    @app_commands.command()
+    async def slash_pat(self, interaction: discord.Interaction, user: discord.Member):
+        """Pat a user!"""
+        await self.do_action(interaction, user, "pat")
+
+    @app_commands.command()
+    async def slash_tickle(self, interaction: discord.Interaction, user: discord.Member):
+        """Tickle a user!"""
+        await self.do_action(interaction, user, "tickle")
+
+    @app_commands.command()
+    async def slash_smug(self, interaction: discord.Interaction):
+        """Be smug towards someone!"""
+        await self.do_action(interaction, None, "smug")
+
+    @app_commands.command()
+    async def slash_lick(self, interaction: discord.Interaction, user: discord.Member):
+        """Lick a user!"""
+        await self.do_action(interaction, user, "lick")
+
+    @app_commands.command()
+    async def slash_slap(self, interaction: discord.Interaction, user: discord.Member):
+        """Slap a user!"""
+        await self.do_action(interaction, user, "slap")
+
+    @app_commands.command()
+    async def slash_cry(self, interaction: discord.Interaction):
+        """Start crying!"""
+        await self.do_action(interaction, None, "cry")
+
+    @app_commands.command()
+    async def slash_sleep(self, interaction: discord.Interaction):
+        """Act sleepy!"""
+        await self.do_action(interaction, None, "sleep")
+
+    @app_commands.command()
+    async def slash_spank(self, interaction: discord.Interaction, user: discord.Member):
+        """Spank a user!"""
+        await self.do_action(interaction, user, "spank")
+
+    @app_commands.command()
+    async def slash_pout(self, interaction: discord.Interaction):
+        """Act pout!"""
+        await self.do_action(interaction, None, "pout")
+
+    @app_commands.command()
+    async def slash_blush(self, interaction: discord.Interaction):
+        """Act blush!"""
+        await self.do_action(interaction, None, "blush")
+
+    @app_commands.command()
+    async def slash_feed(self, interaction: discord.Interaction, user: discord.Member):
+        """Feed a user!"""
+        await self.do_action(interaction, user, "feed")
+
+    @app_commands.command()
+    async def slash_punch(self, interaction: discord.Interaction, user: discord.Member):
+        """Punch a user!"""
+        await self.do_action(interaction, user, "punch")
+
+    @app_commands.command()
+    async def slash_confuse(self, interaction: discord.Interaction):
+        """Act confused!"""
+        await self.do_action(interaction, None, "confuse")
+
+    @app_commands.command()
+    async def slash_amazed(self, interaction: discord.Interaction):
+        """Act amazed!"""
+        await self.do_action(interaction, None, "amazed")
+
+    @app_commands.command()
+    async def slash_highfive(self, interaction: discord.Interaction, user: discord.Member):
+        """Highfive a user!"""
+        await self.do_action(interaction, user, "highfive")
+
+    @app_commands.command()
+    async def slash_plead(self, interaction: discord.Interaction, user: discord.Member):
+        """Ask a user!"""
+        await self.do_action(interaction, user, "plead")
+
+    @app_commands.command()
+    async def slash_clap(self, interaction: discord.Interaction):
+        """Clap for someone!"""
+        await self.do_action(interaction, None, "clap")
+
+    @app_commands.command()
+    async def slash_facepalm(self, interaction: discord.Interaction):
+        """Do a facepalm!"""
+        await self.do_action(interaction, None, "facepalm")
+
+    @app_commands.command()
+    async def slash_facedesk(self, interaction: discord.Interaction):
+        """Do a facedesk!"""
+        await self.do_action(interaction, None, "facedesk")
+
+    @app_commands.command()
+    async def slash_kill(self, interaction: discord.Interaction, user: discord.Member):
+        """Kill a user!"""
+        await self.do_action(interaction, user, "kill")
+
+    @app_commands.command()
+    async def slash_love(self, interaction: discord.Interaction, user: discord.Member):
+        """Love a user!"""
+        await self.do_action(interaction, user, "love")
+
+    @app_commands.command()
+    async def slash_hide(self, interaction: discord.Interaction):
+        """Hide yourself!"""
+        await self.do_action(interaction, None, "hide")
+
+    @app_commands.command()
+    async def slash_laugh(self, interaction: discord.Interaction):
+        """Start laughing!"""
+        await self.do_action(interaction, None, "laugh")
+
+    @app_commands.command()
+    async def slash_lurk(self, interaction: discord.Interaction):
+        """Start lurking!"""
+        await self.do_action(interaction, None, "lurk")
+
+    @app_commands.command()
+    async def slash_bite(self, interaction: discord.Interaction, user: discord.Member):
+        """Bite a user!"""
+        await self.do_action(interaction, user, "bite")
+
+    @app_commands.command()
+    async def slash_dance(self, interaction: discord.Interaction):
+        """Start dancing!"""
+        await self.do_action(interaction, None, "dance")
+
+    @app_commands.command()
+    async def slash_yeet(self, interaction: discord.Interaction, user: discord.Member):
+        """Yeet someone!"""
+        await self.do_action(interaction, user, "yeet")
+
+    @app_commands.command()
+    async def slash_dodge(self, interaction: discord.Interaction):
+        """Dodge something!"""
+        await self.do_action(interaction, None, "dodge")
+
+    @app_commands.command()
+    async def slash_happy(self, interaction: discord.Interaction):
+        """Act happy!"""
+        await self.do_action(interaction, None, "happy")
+
+    @app_commands.command()
+    async def slash_cute(self, interaction: discord.Interaction):
+        """Act cute!"""
+        await self.do_action(interaction, None, "cute")
+
+    @app_commands.command()
+    async def slash_lonely(self, interaction: discord.Interaction):
+        """Act lonely!"""
+        await self.do_action(interaction, None, "lonely")
+
+    @app_commands.command()
+    async def slash_mad(self, interaction: discord.Interaction):
+        """Act angry!"""
+        await self.do_action(interaction, None, "mad")
+
+    @app_commands.command()
+    async def slash_nosebleed(self, interaction: discord.Interaction):
+        """Start bleeding from nose!"""
+        await self.do_action(interaction, None, "nosebleed")
+
+    @app_commands.command()
+    async def slash_protect(self, interaction: discord.Interaction, user: discord.Member):
+        """Protect someone!"""
+        await self.do_action(interaction, user, "protect")
+
+    @app_commands.command()
+    async def slash_run(self, interaction: discord.Interaction):
+        """Start running!"""
+        await self.do_action(interaction, None, "run")
+
+    @app_commands.command()
+    async def slash_scared(self, interaction: discord.Interaction):
+        """Act scared!"""
+        await self.do_action(interaction, None, "scared")
+
+    @app_commands.command()
+    async def slash_shrug(self, interaction: discord.Interaction):
+        """Start shrugging!"""
+        await self.do_action(interaction, None, "shrug")
+
+    @app_commands.command()
+    async def slash_scream(self, interaction: discord.Interaction):
+        """Start screaming!"""
+        await self.do_action(interaction, None, "scream")
+
+    @app_commands.command()
+    async def slash_stare(self, interaction: discord.Interaction):
+        """Stare someone!"""
+        await self.do_action(interaction, None, "stare")
+
+    @app_commands.command()
+    async def slash_wave(self, interaction: discord.Interaction, user: discord.Member):
+        """Wave to someone!"""
+        await self.do_action(interaction, user, "wave")
+
+    @app_commands.command()
+    async def slash_kicknuts(self, interaction: discord.Interaction, user: discord.Member):
+        """Kick a user on the nuts!"""
+        await self.do_action(interaction, user, "nut")
 
 async def setup(bot: Red):
     global hug
