@@ -1607,7 +1607,7 @@ class Perform(commands.Cog):
         Wave to someone!
         """
         embed = await kawaiiembed(self, ctx, "is waving", "wave", user)
-                if not isinstance(embed, discord.Embed):
+        if not isinstance(embed, discord.Embed):
             return await ctx.send(embed)
         target = await self.config.custom("Target", ctx.author.id, user.id).wave_r()
         used = await self.config.user(ctx.author).wave_s()
