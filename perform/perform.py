@@ -5,7 +5,6 @@ from typing import Optional
 import discord
 from redbot.core import commands, Config
 from discord import app_commands
-from discord.ext import commands
 from redbot.core.bot import Red
 
 from .utils import add_footer, kawaiiembed, rstats_embed, send_embed
