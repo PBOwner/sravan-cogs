@@ -21,14 +21,14 @@ async def api_call(call_uri: str, returnObj: Optional[bool] = False):
 
 
 async def has_webhook_perms(ctx: commands.Context) -> bool:
-    if isinstance(ctx.channel, discord.DMChannel):
+    if isinstance(ctx.channel, (discord.DMChannel, discord.GroupChannel)):
         return False
     perm = ctx.channel.permissions_for(ctx.channel.guild.me).manage_webhooks
     return perm is True
 
 
 async def has_embed_perms(ctx: commands.Context) -> bool:
-    if isinstance(ctx.channel, discord.DMChannel):
+    if isinstance(ctx.channel, (discord.DMChannel, discord.GroupChannel)):
         return True
     perm = ctx.channel.permissions_for(ctx.channel.guild.me).embed_links
     return perm is True
@@ -40,7 +40,7 @@ async def send_embed(
     embed: discord.Embed,
     user: Optional[discord.Member] = None,
 ):
-    if isinstance(ctx.channel, discord.DMChannel):
+    if isinstance(ctx.channel, (discord.DMChannel, discord.GroupChannel)):
         if user:
             await ctx.send(embed=embed, content=user.mention)
         else:
