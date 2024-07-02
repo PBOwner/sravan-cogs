@@ -471,7 +471,7 @@ class PerformCog(commands.Cog):
         await send_embed(self, interaction, embed)
         await self.config.user(interaction.user).facepalm.set(used + 1)
 
-    @app_commands.command(name="headdesk", description="Do a facedesk!", aliases=["facedesk"])
+    @app_commands.command(name="headdesk", description="Do a facedesk!")
     async def facedesk(self, interaction: discord.Interaction):
         embed = await kawaiiembed(self, interaction, "is facedesking!", "facedesk")
         if not isinstance(embed, discord.Embed):
@@ -533,7 +533,7 @@ class PerformCog(commands.Cog):
         await send_embed(self, interaction, embed)
         await self.config.user(interaction.user).laugh.set(used + 1)
 
-    @app_commands.command(name="peek", description="Start lurking!", aliases=["lurk"])
+    @app_commands.command(name="peek", description="Start lurking!")
     async def lurk(self, interaction: discord.Interaction):
         embed = await kawaiiembed(self, interaction, "is lurking!", "peek")
         if not isinstance(embed, discord.Embed):
@@ -615,7 +615,7 @@ class PerformCog(commands.Cog):
         await send_embed(self, interaction, embed)
         await self.config.user(interaction.user).cute.set(used + 1)
 
-    @app_commands.command(name="lonely", description="Act lonely!", aliases=["alone"])
+    @app_commands.command(name="lonely", description="Act lonely!")
     async def lonely(self, interaction: discord.Interaction):
         embed = await kawaiiembed(self, interaction, "is lonely!", "lonely")
         if not isinstance(embed, discord.Embed):
@@ -625,7 +625,7 @@ class PerformCog(commands.Cog):
         await send_embed(self, interaction, embed)
         await self.config.user(interaction.user).lonely.set(used + 1)
 
-    @app_commands.command(name="mad", description="Act angry!", aliases=["angry"])
+    @app_commands.command(name="mad", description="Act angry!")
     async def mad(self, interaction: discord.Interaction):
         embed = await kawaiiembed(self, interaction, "is angry!", "mad")
         if not isinstance(embed, discord.Embed):
@@ -718,7 +718,7 @@ class PerformCog(commands.Cog):
         await send_embed(self, interaction, embed)
         await self.config.user(interaction.user).stare.set(used + 1)
 
-    @app_commands.command(name="wave", description="Wave to someone!", aliases=["welcome"])
+    @app_commands.command(name="wave", description="Wave to someone!")
     async def wave(self, interaction: discord.Interaction, user: discord.Member):
         embed = await kawaiiembed(self, interaction, "is waving", "wave", user)
         if not isinstance(embed, discord.Embed):
@@ -734,7 +734,7 @@ class PerformCog(commands.Cog):
             target + 1
         )
 
-    @app_commands.command(name="nutkick", description="Kick a user on the nuts!", aliases=["kicknuts"])
+    @app_commands.command(name="nutkick", description="Kick a user on the nuts!")
     async def kicknuts(self, interaction: discord.Interaction, user: discord.Member):
         images = await self.config.nut()
         mn = len(images)
@@ -780,7 +780,7 @@ class PerformCog(commands.Cog):
         )
         await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(name="performstats", description="View your roleplay stats", aliases=["rstats", "pstats", "roleplaystats"])
+    @app_commands.command(name="performstats", description="View your roleplay stats")
     @commands.guild_only()
     async def performstats(self, interaction: discord.Interaction, action: str, user: Optional[discord.User]):
         if user is None:
@@ -792,7 +792,7 @@ class PerformCog(commands.Cog):
         embed = await rstats_embed(self, interaction, action, user)
         await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(name="performset", description="Settings for roleplay stats", aliases=["pset", "rset", "roleplayset"])
+    @app_commands.command(name="performset", description="Settings for roleplay stats")
     @commands.is_owner()
     async def performset(self, interaction: discord.Interaction):
         pass
