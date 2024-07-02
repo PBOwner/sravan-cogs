@@ -797,7 +797,7 @@ class PerformCog(commands.Cog):
     async def performset(self, interaction: discord.Interaction):
         pass
 
-    @performset.command(name="footer", description="Toggle showing footers for roleplay stats")
+    @app_commands.command(name="footer", description="Toggle showing footers for roleplay stats")
     async def footer(self, interaction: discord.Interaction):
         value = await self.config.footer()
         await self.config.footer.set(not value)
