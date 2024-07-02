@@ -1751,30 +1751,30 @@ class Perform(commands.Cog):
         embed = await rstats_embed(self, ctx, action, user)
         await ctx.send(embed=embed)
 
-    @commands.group(aliases=["pset", "rset", "roleplayset"])
-    @commands.is_owner()
-    async def performset(self, ctx: commands.Context):
-        """Settings for roleplay stats"""
+@commands.group(aliases=["pset", "rset", "roleplayset"])
+@commands.is_owner()
+async def performset(self, ctx: commands.Context):
+    """Settings for roleplay stats"""
 
-    @performset.command()
-    async def footer(self, ctx: commands.Context):
-        """Toggle showing footers for roleplay stats"""
-        value = await self.config.footer()
-        await self.config.footer.set(!value)
-        if value:
-            await ctx.send("Footers will no longer be shown")
-        else:
-            await ctx.send("Footers will now be shown")
+@performset.command()
+async def footer(self, ctx: commands.Context):
+    """Toggle showing footers for roleplay stats"""
+    value = await self.config.footer()
+    await self.config.footer.set(not value)
+    if value:
+        await ctx.send("Footers will no longer be shown")
+    else:
+        await ctx.send("Footers will now be shown")
 
-    @slash_command()
-    async def performset_footer_slash(self, ctx: SlashContext):
-        """Toggle showing footers for roleplay stats"""
-        value = await self.config.footer()
-        await self.config.footer.set(!value)
-        if value:
-            await ctx.send("Footers will no longer be shown")
-        else:
-            await ctx.send("Footers will now be shown")
+@slash_command()
+async def performset_footer_slash(self, ctx: SlashContext):
+    """Toggle showing footers for roleplay stats"""
+    value = await self.config.footer()
+    await self.config.footer.set(not value)
+    if value:
+        await ctx.send("Footers will no longer be shown")
+    else:
+        await ctx.send("Footers will now be shown")
 
     def cog_unload(self):
         global hug
