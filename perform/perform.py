@@ -747,7 +747,7 @@ class Perform(commands.Cog):
         """
         embed = await kawaiiembed(self, ctx, "is happy!", "happy")
         if not isinstance(embed, discord.Embed):
-        return await ctx.send(embed)
+            return await ctx.send(embed)
         used = await self.config.user(ctx.author).happy()
         await add_footer(self, ctx, embed, used, "happiness")
         await send_embed(self, ctx, embed)
