@@ -61,6 +61,15 @@ class Perform(commands.Cog):
                 "https://c.tenor.com/NpMUvPFLwCEAAAAC/ow-balls-kick.gif",
                 "https://c.tenor.com/pbyIf8fSIJsAAAAC/kick-balls-kick-in-the-balls.gif",
             ],
+            "sip": [
+                "https://tenor.com/view/tea-shade-sips-you-right-no-cap-gif-17561526",
+                "https://tenor.com/view/spill-the-tea-gif-9217338699234773697",
+                "https://tenor.com/view/mimosa-gif-4224396184286810037",
+                "https://tenor.com/view/kermit-sips-tea-good-drink-gif-17641799",
+                "https://tenor.com/view/seulisasoo-tea-spill-the-tea-gif-24056454",
+                "https://tenor.com/view/sipping-tea-rolling-eyes-gif-20046413",
+                "https://tenor.com/view/hot-tea-gif-2236132879449776890",
+            ],
             "footer": True,
         }
         default_member = {
@@ -109,6 +118,7 @@ class Perform(commands.Cog):
             "stare": 0,
             "wave_s": 0,
             "nut_s": 0,
+            "sip_s": 0,
         }
         default_target = {
             "cuddle_r": 0,
@@ -132,6 +142,7 @@ class Perform(commands.Cog):
             "protect_r": 0,
             "wave_r": 0,
             "nut_r": 0,
+            "sip_r": 0,
         }
         self.config.register_global(**default_global)
         self.config.register_user(**default_member)
@@ -331,7 +342,6 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="cry")
-
     async def cry(self, ctx: commands.Context):
         """
         Start crying!
@@ -346,7 +356,6 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="sleep")
-
     async def sleep(self, ctx: commands.Context):
         """
         Act sleepy!
@@ -361,17 +370,13 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="spank")
-
     async def spank(self, ctx: commands.Context, user: discord.Member):
         """
         Spanks a user!
         """
-
         images = await self.config.spank()
-
         mn = len(images)
         i = randint(0, mn - 1)
-
         embed = discord.Embed(
             colour=discord.Colour.random(),
             description=f"**{ctx.author.mention}** just spanked {f'**{str(user.mention)}**' if user else 'themselves'}!",
@@ -393,7 +398,6 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="pout")
-
     async def pout(self, ctx: commands.Context):
         """
         Act pout!
@@ -408,7 +412,6 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="blush")
-
     async def blush(self, ctx: commands.Context):
         """
         Act blush!
@@ -423,17 +426,13 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="feed")
-
     async def feed(self, ctx: commands.Context, user: discord.Member):
         """
         Feeds a user!
         """
-
         images = await self.config.feed()
-
         mn = len(images)
         i = randint(0, mn - 1)
-
         embed = discord.Embed(
             colour=discord.Colour.random(),
             description=f"**{ctx.author.mention}** feeds {f'**{str(user.mention)}**' if user else 'themselves'}!",
@@ -455,7 +454,6 @@ class Perform(commands.Cog):
 
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.command(name="punch")
-
     async def punch(self, ctx: commands.Context, user: discord.Member):
         """
         Punch a user!
@@ -749,7 +747,7 @@ class Perform(commands.Cog):
         """
         embed = await kawaiiembed(self, ctx, "is happy!", "happy")
         if not isinstance(embed, discord.Embed):
-            return await ctx.send(embed)
+        return await ctx.send(embed)
         used = await self.config.user(ctx.author).happy()
         await add_footer(self, ctx, embed, used, "happiness")
         await send_embed(self, ctx, embed)
@@ -934,12 +932,9 @@ class Perform(commands.Cog):
         """
         Kick a user on the nuts!
         """
-
         images = await self.config.nut()
-
         mn = len(images)
         i = randint(0, mn - 1)
-
         embed = discord.Embed(
             colour=discord.Colour.random(),
             description=f"**{ctx.author.mention}** just kicked nuts of {f'**{str(user.mention)}**' if user else 'themselves'}!",
@@ -964,9 +959,30 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).nut_s.set(used + 1)
         await self.config.custom("Target", ctx.author.id, user.id).nut_r.set(target + 1)
 
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.command(name="sip")
+    async def sip(self, ctx: commands.Context):
+        """
+        Sip some tea!
+        """
+        images = await self.config.sip()
+        mn = len(images)
+        i = randint(0, mn - 1)
+        embed = discord.Embed(
+            colour=discord.Colour.random(),
+            description=f"**{ctx.author.mention}** is sipping some tea!",
+        )
+        embed.set_author(
+            name=self.bot.user.display_name, icon_url=self.bot.user.display_avatar
+        )
+        embed.set_image(url=images[i])
+        used = await self.config.user(ctx.author).sip_s()
+        await add_footer(self, ctx, embed, used, "sips")
+        await send_embed(self, ctx, embed)
+        await self.config.user(ctx.author).sip_s.set(used + 1)
+
     @commands.is_owner()
     @commands.command()
-
     async def performapi(self, ctx: commands.Context):
         """
         Steps to get the API token needed for few commands.
@@ -986,7 +1002,6 @@ class Perform(commands.Cog):
 
     @commands.command(aliases=["rstats", "pstats", "roleplaystats"])
     @commands.guild_only()
-
     async def performstats(
         self, ctx: commands.Context, action: str, user: Optional[discord.User]
     ):
