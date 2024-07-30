@@ -1013,7 +1013,7 @@ class Perform(commands.Cog):
     async def performset(self, ctx: commands.Context):
         """Settings for roleplay stats"""
 
-    @performset.hybrid_command()
+    @performset.command()
     async def footer(self, ctx: commands.Context):
         """Toggle showing footers for roleplay stats"""
         value = await self.config.footer()
