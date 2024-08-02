@@ -162,7 +162,7 @@ class Perform(commands.Cog):
         return f"{pre_processed}\n\nAuthors: {', '.join(self.__author__)}\nCog Version: {self.__version__}"
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command()
+    @commands.command()
     async def cuddle(self, ctx: commands.Context, user: discord.Member):
         """
         Cuddle a user!
@@ -182,7 +182,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="poke")
+    @commands.command(name="poke")
     async def poke(self, ctx: commands.Context, user: discord.Member):
         """
         Poke a user!
@@ -202,7 +202,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="kiss")
+    @commands.command(name="kiss")
     async def kiss(self, ctx: commands.Context, user: discord.Member):
         """
         Kiss a user!
@@ -222,7 +222,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="hug")
+    @commands.command(name="hug")
     async def hug(self, ctx: commands.Context, user: discord.Member):
         """
         Hugs a user!
@@ -240,7 +240,7 @@ class Perform(commands.Cog):
         await self.config.custom("Target", ctx.author.id, user.id).hug_r.set(target + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="pat")
+    @commands.command(name="pat")
     async def pat(self, ctx: commands.Context, user: discord.Member):
         """
         Pats a user!
@@ -258,7 +258,7 @@ class Perform(commands.Cog):
         await self.config.custom("Target", ctx.author.id, user.id).pat_r.set(target + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="tickle")
+    @commands.command(name="tickle")
     async def tickle(self, ctx: commands.Context, user: discord.Member):
         """
         Tickles a user!
@@ -278,7 +278,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="smug")
+    @commands.command(name="smug")
     async def smug(self, ctx: commands.Context):
         """
         Be smug towards someone!
@@ -292,7 +292,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).smug_s.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="lick")
+    @commands.command(name="lick")
     async def lick(self, ctx: commands.Context, user: discord.Member):
         """
         Licks a user!
@@ -312,7 +312,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="slap")
+    @commands.command(name="slap")
     async def slap(self, ctx: commands.Context, user: discord.Member):
         """
         Slaps a user!
@@ -332,7 +332,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="cry")
+    @commands.command(name="cry")
     async def cry(self, ctx: commands.Context):
         """
         Start crying!
@@ -346,7 +346,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).cry.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="sleep")
+    @commands.command(name="sleep")
     async def sleep(self, ctx: commands.Context):
         """
         Act sleepy!
@@ -360,7 +360,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).sleep.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="spank")
+    @commands.command(name="spank")
     async def spank(self, ctx: commands.Context, user: discord.Member):
         """
         Spanks a user!
@@ -388,7 +388,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="pout")
+    @commands.command(name="pout")
     async def pout(self, ctx: commands.Context):
         """
         Act pout!
@@ -402,7 +402,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).pout.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="blush")
+    @commands.command(name="blush")
     async def blush(self, ctx: commands.Context):
         """
         Act blush!
@@ -416,7 +416,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).blush.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="feed")
+    @commands.command(name="feed")
     async def feed(self, ctx: commands.Context, user: discord.Member):
         """
         Feeds a user!
@@ -444,7 +444,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="punch")
+    @commands.command(name="punch")
     async def punch(self, ctx: commands.Context, user: discord.Member):
         """
         Punch a user!
@@ -464,7 +464,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="confuse", aliases=["confused"])
+    @commands.command(name="confuse", aliases=["confused"])
     async def confuse(self, ctx: commands.Context):
         """
         Act confused!
@@ -478,7 +478,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).confused.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="amazed", aliases=["amazing"])
+    @commands.command(name="amazed", aliases=["amazing"])
     async def amazed(self, ctx: commands.Context):
         """
         Act amazed!
@@ -492,7 +492,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).amazed.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command()
+    @commands.command()
     async def highfive(self, ctx: commands.Context, user: discord.Member):
         """
         Highfive a user!
@@ -519,7 +519,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="plead")
+    @commands.command(name="plead")
     async def plead(self, ctx: commands.Context, user: discord.Member):
         """
         Asks a user!
@@ -539,7 +539,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="clap")
+    @commands.command(name="clap")
     async def clap(self, ctx: commands.Context):
         """
         Clap for someone!
@@ -553,7 +553,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).clap.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="facepalm")
+    @commands.command(name="facepalm")
     async def facepalm(self, ctx: commands.Context):
         """
         Do a facepalm!
@@ -567,7 +567,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).facepalm.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="headdesk", aliases=["facedesk"])
+    @commands.command(name="headdesk", aliases=["facedesk"])
     async def facedesk(self, ctx: commands.Context):
         """
         Do a facedesk!
@@ -581,7 +581,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).facedesk.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command()
+    @commands.command()
     async def kill(self, ctx: commands.Context, user: discord.Member):
         """
         Kill a user!
@@ -601,7 +601,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command()
+    @commands.command()
     async def love(self, ctx: commands.Context, user: discord.Member):
         """
         Love a user!
@@ -621,7 +621,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="hide")
+    @commands.command(name="hide")
     async def hide(self, ctx: commands.Context):
         """
         Hide yourself!
@@ -635,7 +635,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).hide.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="laugh")
+    @commands.command(name="laugh")
     async def laugh(self, ctx: commands.Context):
         """
         Start laughing!
@@ -649,7 +649,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).laugh.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="peek", aliases=["lurk"])
+    @commands.command(name="peek", aliases=["lurk"])
     async def lurk(self, ctx: commands.Context):
         """
         Start lurking!
@@ -663,7 +663,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).lurk.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command()
+    @commands.command()
     async def bite(self, ctx: commands.Context, user: discord.Member):
         """
         Bite a user!
@@ -683,7 +683,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="dance")
+    @commands.command(name="dance")
     async def dance(self, ctx: commands.Context):
         """
         Start dancing!
@@ -697,7 +697,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).dance.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command()
+    @commands.command()
     async def yeet(self, ctx: commands.Context, user: discord.Member):
         """
         Yeet someone!
@@ -717,7 +717,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="dodge")
+    @commands.command(name="dodge")
     async def dodge(self, ctx: commands.Context):
         """
         Dodge something!
@@ -733,7 +733,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).dodge.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="happy")
+    @commands.command(name="happy")
     async def happy(self, ctx: commands.Context):
         """
         Act happy!
@@ -747,7 +747,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).happy.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="cute")
+    @commands.command(name="cute")
     async def cute(self, ctx: commands.Context):
         """
         Act cute!
@@ -761,7 +761,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).cute.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="lonely", aliases=["alone"])
+    @commands.command(name="lonely", aliases=["alone"])
     async def lonely(self, ctx: commands.Context):
         """
         Act lonely!
@@ -775,7 +775,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).lonely.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="mad", aliases=["angry"])
+    @commands.command(name="mad", aliases=["angry"])
     async def mad(self, ctx: commands.Context):
         """
         Act angry!
@@ -789,7 +789,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).mad.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="nosebleed")
+    @commands.command(name="nosebleed")
     async def nosebleed(self, ctx: commands.Context):
         """
         Start bleeding from nose!
@@ -803,7 +803,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).nosebleed.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command()
+    @commands.command()
     async def protect(self, ctx: commands.Context, user: discord.Member):
         """
         Protech someone!
@@ -830,7 +830,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="run")
+    @commands.command(name="run")
     async def run(self, ctx: commands.Context):
         """
         Start running!
@@ -844,7 +844,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).run.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="scared")
+    @commands.command(name="scared")
     async def scared(self, ctx: commands.Context):
         """
         Act scared!
@@ -858,7 +858,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).scared.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="shrug")
+    @commands.command(name="shrug")
     async def shrug(self, ctx: commands.Context):
         """
         Start shrugging!
@@ -872,7 +872,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).shrug.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="scream")
+    @commands.command(name="scream")
     async def scream(self, ctx: commands.Context):
         """
         Start screaming!
@@ -886,7 +886,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).scream.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="stare")
+    @commands.command(name="stare")
     async def stare(self, ctx: commands.Context):
         """
         Stare someone!
@@ -900,7 +900,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).stare.set(used + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(aliases=["welcome"])
+    @commands.command(aliases=["welcome"])
     async def wave(self, ctx: commands.Context, user: discord.Member):
         """
         Wave to someone!
@@ -920,7 +920,7 @@ class Perform(commands.Cog):
         )
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="nutkick", aliases=["kicknuts"])
+    @commands.command(name="nutkick", aliases=["kicknuts"])
     async def kicknuts(self, ctx: commands.Context, user: discord.Member):
         """
         Kick a user on the nuts!
@@ -953,7 +953,7 @@ class Perform(commands.Cog):
         await self.config.custom("Target", ctx.author.id, user.id).nut_r.set(target + 1)
 
     @commands.cooldown(1, 10, commands.BucketType.user)
-    @commands.hybrid_command(name="sip")
+    @commands.command(name="sip")
     async def sip(self, ctx: commands.Context):
         """
         Sip some tea!
@@ -975,7 +975,7 @@ class Perform(commands.Cog):
         await self.config.user(ctx.author).sip_s.set(used + 1)
 
     @commands.is_owner()
-    @commands.hybrid_command()
+    @commands.command()
     async def performapi(self, ctx: commands.Context):
         """
         Steps to get the API token needed for few commands.
@@ -993,7 +993,7 @@ class Perform(commands.Cog):
         )
         await ctx.send(embed=embed)
 
-    @commands.hybrid_command(aliases=["rstats", "pstats", "roleplaystats"])
+    @commands.command(aliases=["rstats", "pstats", "roleplaystats"])
     @commands.guild_only()
     async def performstats(
         self, ctx: commands.Context, action: str, user: Optional[discord.User]
